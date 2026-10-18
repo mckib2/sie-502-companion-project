@@ -9,7 +9,7 @@ project:
 sources: [ src ]
 
 dependencies:
-  "@oml/cams": "0.1.0"
+  "@oml/cams": "0.1.1"
 
 defaults:
   render: -m src/md -b build/web -c src/oml/example.com/cams-example/bundle.oml
