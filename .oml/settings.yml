@@ -1,0 +1,17 @@
+oml-code:
+  schemaVersion: 1
+
+project:
+  name: "@oml/cams-example"
+  version: 0.1.0
+  description: "Independent consumer example for Collaborative Autonomy Management Systems"
+
+sources: [ src ]
+
+dependencies:
+  "@oml/cams": "0.1.0"
+
+defaults:
+  render: -m src/md -b build/web -c src/oml/example.com/cams-example/bundle.oml
+  export: -o build/owl
+  reason: -o build/owl -t

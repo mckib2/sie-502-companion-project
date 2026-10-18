@@ -1,0 +1,138 @@
+@dc:title "Harbor & Coastal Autonomous Security Description"
+@dc:description "Example consumer model demonstrating autonomous harbor defense using CAMS methodology."
+description <https://example.com/cams-example/description#> as coastal-desc {
+
+    uses <http://purl.org/dc/elements/1.1/> as dc
+    uses <http://www.w3.org/2001/XMLSchema#> as xsd
+    uses <https://example.com/cams/vocabulary#> as cams
+
+    // Authority Viewpoint
+    instance CoastalCommander : cams:MissionCommander [
+        cams:name "Coastal Defense Commander"
+        cams:expresses IntentPerimeterSecurity
+    ]
+
+    instance IntentPerimeterSecurity : cams:Intent [
+        cams:name "Secure coastal approach and harbor perimeter"
+        cams:priority "High"
+        cams:isGatedBy ConstraintHarborClear
+        cams:spawns ObjPerimeterSurveillance
+    ]
+
+    instance ConstraintHarborClear : cams:Constraint [
+        cams:name "Operate under approved ROE and sea state"
+        cams:satisfactionStatus "Satisfied"
+        cams:comprisesCondition CondSeaStatePermissible
+    ]
+
+    instance CondSeaStatePermissible : cams:Condition [
+        cams:name "Sea state <= 3 for surface autonomous vehicles"
+        cams:satisfactionStatus "Satisfied"
+    ]
+
+    // Mission Viewpoint
+    instance MissionCoastalSecurity : cams:MissionPlan [
+        cams:name "Harbor Coastal Security Mission 2026"
+        cams:includesIntent IntentPerimeterSecurity
+        cams:includesObjective ObjPerimeterSurveillance
+        cams:assignedTo CoastalTaskGroup
+    ]
+
+    instance ObjPerimeterSurveillance : cams:Objective [
+        cams:name "Detect and track unauthorized surface vessels"
+        cams:successProbabilityThreshold "0.80"^^xsd:decimal
+        cams:isGatedBy ObjSurveillanceConstraint
+    ]
+
+    instance ObjSurveillanceConstraint : cams:Constraint [
+        cams:name "Surveillance authorization gate"
+        cams:satisfactionStatus "Satisfied"
+        cams:comprisesCondition CondSeaStatePermissible
+    ]
+
+    // Platform & Asset Viewpoint
+    instance CoastalTaskGroup : cams:Team [
+        cams:name "Coastal Autonomous Task Group"
+        cams:includesMember USV_Protector
+        cams:includesMember UAV_ScanEagle
+    ]
+
+    instance CapSurfacePatrol : cams:Capability [
+        cams:name "Surface perimeter patrol"
+    ]
+
+    instance CapAerialSurveillance : cams:Capability [
+        cams:name "Persistent aerial EO/IR overwatch"
+    ]
+
+    instance USV_Protector : cams:Asset [
+        cams:name "Protector USV-1"
+        cams:providesCapability CapSurfacePatrol
+    ]
+
+    instance UAV_ScanEagle : cams:Asset [
+        cams:name "ScanEagle UAV-1"
+        cams:providesCapability CapAerialSurveillance
+    ]
+
+    // Behavior Viewpoint
+    instance BehSurfaceSweep : cams:Behavior [
+        cams:name "SurfaceSweep"
+        cams:requiresCapability CapSurfacePatrol
+    ]
+
+    instance BehAerialOverwatch : cams:Behavior [
+        cams:name "AerialOverwatch"
+        cams:requiresCapability CapAerialSurveillance
+    ]
+
+    // World States & Prediction
+    instance WS_CoastalNominal : cams:WorldState [
+        cams:name "Initial coastal surveillance state"
+    ]
+
+    instance WS_PerimeterSecured : cams:PredictedWorldState [
+        cams:name "Perimeter sweep completed and tracks confirmed"
+    ]
+
+    // Estimator
+    instance EstCoastalPatrol : cams:SuccessProbabilityEstimator [
+        cams:name "Coastal Patrol PoS Estimator"
+        cams:yields EstResCoastalPatrol
+    ]
+
+    instance EstResCoastalPatrol : cams:OPMSuccessEstimate [
+        cams:name "High confidence maritime tracking"
+        cams:estimatedSuccessProbability "0.91"^^xsd:decimal
+    ]
+
+    // Engagement & OPM Viewpoint
+    instance EngagementCoastal : cams:EngagementPlan [
+        cams:name "Coastal Harbor Defense Engagement Plan"
+        cams:realizes MissionCoastalSecurity
+        cams:isExecutedBy CoastalTaskGroup
+        cams:contains OPM_HarborPatrol
+    ]
+
+    instance OPM_HarborPatrol : cams:OPM [
+        cams:name "Harbor Entrance & Perimeter Patrol"
+        cams:satisfies ObjPerimeterSurveillance
+        cams:usesEstimator EstCoastalPatrol
+        cams:startsFrom WS_CoastalNominal
+        cams:predictsSuccessor WS_PerimeterSecured
+        cams:contains RoleUSVLead
+        cams:contains RoleUAVOverwatch
+    ]
+
+    instance RoleUSVLead : cams:Role [
+        cams:name "Surface patrol lead"
+        cams:realizesBehavior BehSurfaceSweep
+        cams:allocatedTo USV_Protector
+    ]
+
+    instance RoleUAVOverwatch : cams:Role [
+        cams:name "Aerial overwatch spotter"
+        cams:realizesBehavior BehAerialOverwatch
+        cams:allocatedTo UAV_ScanEagle
+    ]
+}

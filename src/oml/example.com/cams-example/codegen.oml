@@ -1,0 +1,10 @@
+description <https://example.com/cams-example/codegen#> as configs {
+    uses <http://opencaesar.io/codegen#> as codegen
+    extends <https://example.com/cams/codegen/playbook#> as playbook
+
+    instance coastalPlaybook : codegen:Config [
+        codegen:spec playbook:PlaybookSpec
+        codegen:context "https://example.com/cams-example/bundle"
+        codegen:binding [ codegen:key "path" codegen:value "build/docs" ]
+    ]
+}

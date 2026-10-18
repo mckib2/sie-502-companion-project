@@ -1,0 +1,4 @@
+description bundle <https://example.com/cams-example/bundle#> as coastal-bundle {
+    uses <https://example.com/cams/bundle#>
+    includes <https://example.com/cams-example/description#>
+}
